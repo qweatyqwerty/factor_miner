@@ -1,0 +1,25 @@
+# 因子挖掘框架依赖
+# 安装：D:\conda_envs\torch\python.exe -m pip install -r requirements.txt
+
+# 数据获取
+akshare>=1.15.0
+requests>=2.31.0
+
+# 数据处理
+numpy>=1.24.0
+pandas>=2.0.0
+
+# 技术分析因子
+ta-lib>=0.4.28
+
+# 回测
+backtrader>=1.9.78.123
+
+# 配置与日志
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# 可选：交互式分析
+jupyter>=1.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
