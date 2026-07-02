@@ -2,11 +2,13 @@
 
 import csv
 import logging
+import time
 from pathlib import Path
 from typing import Optional
 
 import akshare as ak
 import pandas as pd
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -58,13 +60,33 @@ class StockAPI:
             return df
 
         logger.info("从 akshare 下载股票 %s 日线数据", symbol)
-        df = ak.stock_zh_a_hist(
-            symbol=symbol,
-            period="daily",
-            start_date=start_date,
-            end_date=end_date,
-            adjust=adjust,
-        )
+
+        # 尝试下载，失败时重试最多 3 次
+        max_retries = 3
+        last_error = None
+        for attempt in range(1, max_retries + 1):
+            try:
+                df = ak.stock_zh_a_hist(
+                    symbol=symbol,
+                    period="daily",
+                    start_date=start_date,
+                    end_date=end_date,
+                    adjust=adjust,
+                )
+                break
+            except (requests.exceptions.RequestException, Exception) as e:
+                last_error = e
+                logger.warning(
+                    "第 %d/%d 次下载 %s 失败: %s", attempt, max_retries, symbol, e
+                )
+                if attempt < max_retries:
+                    time.sleep(2 ** attempt)  # 指数退避
+        else:
+            logger.error("下载股票 %s 日线数据失败: %s", symbol, last_error)
+            raise RuntimeError(
+                f"无法从 akshare 下载股票 {symbol} 数据。"
+                f"请检查网络、代理设置，或稍后重试。原始错误: {last_error}"
+            ) from last_error
         # 统一列名（适配 akshare 中文列名）
         rename_map = {
             "日期": "date",

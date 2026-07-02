@@ -1,45 +1,35 @@
-# 因子挖掘框架配置
-project:
-  name: "因子挖掘实验室"
-  data_dir: "./data"           # 本地数据缓存目录
-  result_dir: "./results"      # 回测结果输出目录
-  log_level: "INFO"
-
-# 股票相关配置
-stock:
-  default_symbol: "000001"     # 平安银行
-  start_date: "20230101"
-  end_date: "20251231"
-  adjust: "qfq"                # 前复权
-  freq: "daily"                # daily / weekly
-
-# 期货相关配置
-future:
-  default_symbol: "RB2501"     # 螺纹钢主力示例（随时间需更新）
-  start_date: "20240101"
-  end_date: "20251231"
-  period: "daily"              # daily / hourly
-
-# 回测引擎配置
 backtest:
-  initial_cash: 1000000.0      # 初始资金
-  commission: 0.0003           # 手续费（单边）
-  slippage: 0.001              # 滑点
-  stake_size: 100              # 每次交易股数/手数
-
-# 交易接口配置（模拟/实盘）
+  commission: 0.0003
+  initial_cash: 1000000.0
+  slippage: 0.001
+  stake_size: 100
+future:
+  default_symbol: RB2501
+  end_date: '20251231'
+  period: daily
+  start_date: '20240101'
+project:
+  data_dir: ./data
+  log_level: INFO
+  name: 因子挖掘实验室
+  result_dir: ./results
+stock:
+  adjust: qfq
+  default_symbol: '000001'
+  end_date: '20251231'
+  freq: daily
+  start_date: '20230101'
 trading:
-  mode: "paper"                # paper（模拟）/ real（实盘）
-  # 实盘接入时需要填写，以下仅为示例，请替换为真实账号信息
-  stock:
-    broker: "qmt"              # qmt / xtquant / ths
-    account: ""
-    path: ""
   future:
-    broker: "ctp"              # ctp（vnpy）
-    front_address: ""
-    broker_id: ""
-    user_id: ""
-    password: ""
-    app_id: ""
-    auth_code: ""
+    app_id: ''
+    auth_code: ''
+    broker: ctp
+    broker_id: ''
+    front_address: ''
+    password: ''
+    user_id: ''
+  mode: paper
+  stock:
+    account: ''
+    broker: qmt
+    path: ''
