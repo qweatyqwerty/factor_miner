@@ -76,10 +76,12 @@ class PaperBroker(BrokerInterface):
         initial_cash: float = 1_000_000.0,
         commission: float = 0.0003,
         slippage: float = 0.001,
+        sell_fee: float = 0.0,
     ):
         self.cash = initial_cash
         self.commission_rate = commission
         self.slippage = slippage
+        self.sell_fee = sell_fee
         self.positions: Dict[str, int] = {}
         self.trades: List[Trade] = []
         self._cost_basis: Dict[str, float] = {}  # 记录持仓成本，用于计算平仓盈亏
@@ -93,7 +95,9 @@ class PaperBroker(BrokerInterface):
             exec_price = order.price * (1 - self.slippage)
 
         amount = exec_price * order.size
-        commission = amount * self.commission_rate
+        commission = amount * (
+            self.commission_rate + (self.sell_fee if order.direction == "sell" else 0.0)
+        )
 
         if order.direction == "buy":
             total_cost = amount + commission

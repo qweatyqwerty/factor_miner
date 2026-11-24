@@ -66,6 +66,31 @@ D:\conda_envs\torch\python.exe examples/simple_backtest.py
 
 更多因子可在 `factor_miner/factors/technical.py` 中扩展。
 
+## 多因子组合与策略回测
+
+`run.py --task strategy` 提供股票多因子择时、截面选股和单合约期货多空择时。策略在收盘后评分，模拟订单从下一交易日开盘起执行，并输出基准对照、组合评分、目标仓位和实际成交。
+
+```powershell
+# 项目自带缓存
+D:\conda_envs\torch\python.exe run.py --task strategy --profile stock_timing
+D:\conda_envs\torch\python.exe run.py --task strategy --profile future_timing
+
+# 离线验证截面流程
+D:\conda_envs\torch\python.exe run.py --task strategy --profile stock_cross_section --demo
+```
+
+输入格式、权重算法、样本区间和成交口径见 [多因子研究与回测指南](strategy_research.md)。
+
+可用 `stock_timing_slow` 和 `stock_timing_wider_exit` 对照原择时策略，也可用 `stock_cross_section_buffered` 检查排名缓冲对换手的影响。择时任务支持从多股票 CSV 用 `--symbol` 选择一只股票。用 `--evaluation-start` 和 `--evaluation-end` 固定评估区间。
+
+## 本地策略研究台
+
+在项目目录运行以下命令，打开 [本地研究台](http://127.0.0.1:8765)。可手动选择行情、因子、交易规则和费用，查看策略与基准的曲线，并导出配置和成交记录。
+
+```powershell
+D:\conda_envs\torch\python.exe run.py --task dashboard
+```
+
 ## 常见问题
 
 - `akshare` 接口会随东方财富等网站调整，如报错请升级：`D:\conda_envs\torch\python.exe -m pip install -U akshare`。

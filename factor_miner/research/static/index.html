@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>因子研究台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">ƒ</span><h1>因子研究台</h1></div>
+    <span class="local"><i></i> 本地研究</span>
+  </header>
+  <main class="workspace">
+    <aside class="settings">
+      <div class="panel-heading"><h2>策略配置</h2></div>
+      <form id="strategy-form">
+        <section class="config-section">
+          <h3>行情与预设</h3>
+          <label>策略预设<select id="profile" required></select></label>
+          <label>行情数据<select id="dataset" required></select></label>
+          <label id="symbol-field">标的<select id="symbol"></select></label>
+          <p id="data-note" class="field-note"></p>
+          <div class="grid two">
+            <label>评估开始<input type="date" id="start" required></label>
+            <label>评估结束<input type="date" id="end" required></label>
+          </div>
+        </section>
+        <section class="config-section">
+          <h3>交易规则</h3><div id="rules" class="grid two"></div>
+        </section>
+        <section class="config-section">
+          <div class="section-heading"><h3>因子组合</h3><button type="button" id="add-factor" class="quiet">＋ 添加</button></div>
+          <div id="factors"></div>
+        </section>
+        <details class="config-section">
+          <summary>资金与交易成本</summary>
+          <div id="costs" class="grid two details-content"></div>
+        </details>
+        <div class="submit">
+          <button class="run-button" id="run" type="submit" disabled>运行回测 <span aria-hidden="true">→</span></button>
+          <p id="status" class="field-note" role="status" aria-live="polite">正在读取行情…</p>
+        </div>
+      </form>
+    </aside>
+    <section class="results" aria-label="回测结果">
+      <header class="result-head">
+        <div><h2>回测概览</h2><p id="run-description">选择行情和策略后运行回测。</p></div>
+        <div class="export-actions" id="exports" hidden>
+          <button type="button" data-export="yaml">导出配置</button>
+          <button type="button" data-export="curves_csv">净值 CSV</button>
+          <button type="button" data-export="trades_csv">成交 CSV</button>
+        </div>
+      </header>
+      <div id="summary" class="summary" aria-live="polite"></div>
+      <section class="chart-card">
+        <div class="chart-head">
+          <h3 id="chart-title">累计收益</h3>
+          <div class="segments" aria-label="图表指标">
+            <button type="button" data-chart="equity" aria-pressed="true">收益</button>
+            <button type="button" data-chart="drawdown" aria-pressed="false">回撤</button>
+            <button type="button" data-chart="gross_exposure_ratio" aria-pressed="false">仓位</button>
+          </div>
+        </div>
+        <div class="legend"><span><i></i> 策略</span><span><i></i> 比较基准</span></div>
+        <div id="plot">
+          <canvas id="chart" role="img" aria-label="策略与基准的时间序列"></canvas>
+          <p id="chart-empty">运行后显示曲线</p>
+          <div id="tooltip" hidden></div>
+        </div>
+      </section>
+      <section class="detail-card">
+        <div class="detail-head">
+          <div class="segments" aria-label="明细视图">
+            <button type="button" data-detail="performance" aria-pressed="true">绩效明细</button>
+            <button type="button" data-detail="trades" aria-pressed="false">成交记录</button>
+            <button type="button" data-detail="factors" aria-pressed="false">因子诊断</button>
+          </div>
+          <small id="detail-note"></small>
+        </div>
+        <div id="detail" class="table-wrap"></div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

@@ -19,6 +19,79 @@ stock:
   end_date: '20251231'
   freq: daily
   start_date: '20230101'
+research:
+  default_profile: stock_timing
+  profiles:
+    stock_timing: &stock_timing_defaults
+      market: stock
+      mode: timing
+      weighting: fixed
+      z_window: 40
+      entry: 0.6
+      exit: 0.1
+      max_exposure: 0.90
+      lot_size: 100
+      sell_fee: 0       # 模型附加卖出费率，可按回测成本口径配置
+      factors:
+        momentum: {type: momentum, params: {window: 20}, weight: 2}
+        trend: {type: sma_cross, params: {short: 5, long: 20}, weight: 2}
+        risk: {type: volatility, params: {window: 20}, direction: -1, weight: 1}
+    stock_timing_wider_exit:
+      <<: *stock_timing_defaults
+      exit: -0.25
+    stock_timing_slow:
+      <<: *stock_timing_defaults
+      z_window: 63
+      entry: 0.55
+      exit: -0.20
+      factors:
+        momentum: {type: momentum, params: {window: 63}, weight: 2}
+        trend: {type: sma_cross, params: {short: 20, long: 80}, weight: 2}
+        risk: {type: volatility, params: {window: 20}, direction: -1, weight: 1}
+    stock_cross_section: &stock_cross_section_defaults
+      market: stock
+      mode: cross_section
+      symbols: ['000001', '000002', '000333', '000651', '600000', '600519']
+      normalization: rank
+      weighting: rolling_ic
+      min_assets: 4
+      ic_min_assets: 4
+      forward_period: 5
+      ic_window: 60
+      ic_min_periods: 20
+      rebalance_every: 5
+      top_n: 3
+      max_exposure: 0.90
+      max_weight: 0.35
+      lot_size: 100
+      sell_fee: 0
+      evaluation_start: '2023-07-03'
+      factors:
+        momentum: {type: momentum, params: {window: 20}}
+        trend: {type: sma_cross, params: {short: 5, long: 20}}
+        reversal: {type: rsi, params: {window: 14}, direction: -1}
+        risk: {type: volatility, params: {window: 20}, direction: -1}
+    stock_cross_section_buffered:
+      <<: *stock_cross_section_defaults
+      weighting: equal
+      rank_buffer: 2
+    future_timing:
+      market: future
+      mode: timing
+      weighting: equal
+      z_window: 35
+      entry: 0.6
+      exit: 0.15
+      allow_short: true
+      max_exposure: 0.45
+      contract_multiplier: 10   # RB2501 样例模型参数
+      margin_rate: 0.15        # 样例保证金率，按历史口径调整
+      max_contracts: 10
+      fee_per_contract: 0      # 每手附加固定费用
+      factors:
+        momentum: {type: momentum, params: {window: 15}}
+        trend: {type: sma_cross, params: {short: 5, long: 20}}
+        macd: {type: macd}
 trading:
   future:
     app_id: ''
